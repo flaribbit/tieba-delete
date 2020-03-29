@@ -40,13 +40,13 @@ def deletePost(fid,pid,tid,tbs,title):
         print("Deleted",tid,title)
 
 postList=[]
-for i in range(1,50):
+for i in range(1,50):#$$懒没算页码自己写吧
     try:
         print("Page",i+1)
         soup=BeautifulSoup(sessions.get('http://tieba.baidu.com/i/i/my_tie?pn='+str(i+1)).content,features="html.parser")
         items=soup.select('.simple_block_container>ul>li')
         for item in items:
-            if True:#这里可以加一些条件筛选一下
+            if True:#$$这里可以加一些条件筛选一下
                 print(item.text)
                 postList.append('https://tieba.baidu.com/'+item.select_one('a.thread_title').attrs['href'])
     except KeyboardInterrupt:
