@@ -10,16 +10,17 @@ sessions.cookies=requests.cookies.cookiejar_from_dict({
     "BDUSS":"",#$$必填
 })
 
-def getInfo(url):
+def getInfo(url,backup):
     html=sessions.get(url).text
     fid=re.search('"fid":(\\d+)',html).group(1)
     tbs=re.search('"tbs": "([^"]+)"',html).group(1)
     tid=re.search('/p/(\\d+)',url).group(1)
     pid=re.search('pid=(\\d+)',url).group(1)
     title=re.search('<title>([^<]+)',html).group(1)
-    file=open("backup/"+tid+"_"+title+".html","w")
-    file.write(html)
-    file.close()
+    if backup:
+        file=open("backup/"+tid+"_"+title+".html","w")
+        file.write(html)
+        file.close()
     return (fid,tbs,tid,pid,title)
 
 def deletePost(fid,pid,tid,tbs,title):
@@ -55,10 +56,13 @@ for i in range(1,50):
 
 print("Total",len(postList),"posts, delete all?(y/n)")
 choice=input()
+print("Backup?(y/n)")
+isbackup=input()
 if choice=="y":
+    isbackup=(isbackup=="y")
     for url in postList:
         try:
-            fid,tbs,tid,pid,title=getInfo(url)
+            fid,tbs,tid,pid,title=getInfo(url,isbackup)
             deletePost(fid,pid,tid,tbs,title)
         except KeyboardInterrupt:
             exit()
